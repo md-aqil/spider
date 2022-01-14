@@ -1,10 +1,11 @@
 gsap.registerPlugin(MotionPathPlugin);
+console.log("helo world");
+
 const logo = "#dpad-logo";
 function registerPath(timeline, path, isLast) {
     const el = document.querySelector(path);
     const start = parseInt(el.getAttribute("data-start") || 1);
     const end = parseInt(el.getAttribute("data-end") || 0);
-    console.log({ start, end });
     timeline.to(logo, {
         motionPath: {
             path,
@@ -27,7 +28,7 @@ function handleClick(e) {
     }
     window.location.href = link;
 }
-
+let timer = null;
 for (const component of document.querySelectorAll("[data-path]")) {
     const paths = component.getAttribute("data-path");
     const child = component.getAttribute("data-child");
@@ -48,9 +49,14 @@ for (const component of document.querySelectorAll("[data-path]")) {
         );
     }
     component.addEventListener("mouseenter", () => {
-        console.log("Scaling", component.id);
+        if (timer) {
+            clearTimeout(timer);
+        }
         timeline.play();
     });
-    //   component.addEventListener("mouseleave", () => timeline.reverse());
+    component.addEventListener("mouseleave", () => {
+        console.log("reversing");
+        timer = setTimeout(() => timeline.reverse(), 300);
+    });
     component.addEventListener("click", () => handleClick(component));
 }
